@@ -10,7 +10,7 @@
     "dev": "ts-node-dev src/server.ts"
   },
   "engines": {
-    "node": "14.x"
+    "node": "18.x"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",

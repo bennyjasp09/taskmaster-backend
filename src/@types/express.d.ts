@@ -1,4 +1,4 @@
-// src/types/express/index.d.ts
+
 
 import { Express } from 'express-serve-static-core';
 
