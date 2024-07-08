@@ -4,10 +4,10 @@
   "description": "Backend for TaskMaster application",
   "main": "src/server.ts",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts"
-  },
+  "start": "node dist/server.js",
+  "build": "tsc",
+  "postinstall": "npm run build"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,9 +21,8 @@
     "mongoose": "7.7.0"
   },
   "engines": {
-  "node": ">=14.x"
-},
-
+    "node": ">=14.x"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.5",
     "@types/cors": "^2.8.15",
