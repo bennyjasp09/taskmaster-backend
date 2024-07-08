@@ -40,10 +40,10 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createTask = createTask;
 const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b, _c;
+    var _a, _b;
     try {
         const { content } = req.body;
-        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId }) } }, { $push: { comments: { user: (_c = req.user) === null || _c === void 0 ? void 0 : _c.userId, content } } }, { new: true });
+        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) } }, { $push: { comments: { user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId, content } } }, { new: true });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });
         }
@@ -101,10 +101,10 @@ const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getTaskById = getTaskById;
 const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
+    var _a;
     try {
         const { title, description, status, assignedTo, dueDate } = req.body;
-        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_d = req.user) === null || _d === void 0 ? void 0 : _d.userId }) } }, { title, description, status, assignedTo, dueDate }, { new: true });
+        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) } }, { title, description, status, assignedTo, dueDate }, { new: true });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });
         }
@@ -116,11 +116,11 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateTask = updateTask;
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
+    var _a;
     try {
         const task = yield Task_1.default.findOneAndDelete({
             _id: req.params.id,
-            project: { $in: yield Project_1.default.find({ members: (_e = req.user) === null || _e === void 0 ? void 0 : _e.userId }) }
+            project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) }
         });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });

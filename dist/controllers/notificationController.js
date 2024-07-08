@@ -28,9 +28,9 @@ const getNotifications = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.getNotifications = getNotifications;
 const markNotificationAsRead = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     try {
-        const notification = yield Notification_1.default.findOneAndUpdate({ _id: req.params.id, user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId }, { read: true }, { new: true });
+        const notification = yield Notification_1.default.findOneAndUpdate({ _id: req.params.id, user: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }, { read: true }, { new: true });
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found' });
         }
