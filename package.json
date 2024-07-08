@@ -1,0 +1,32 @@
+{
+  "name": "taskmaster-backend",
+  "version": "1.0.0",
+  "description": "Backend for TaskMaster application",
+  "main": "src/server.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "16.4.5",
+    "express": "^4.19.2",
+    "joi": "17.13.3",
+    "jsonwebtoken": "9.0.2",
+    "mongoose": "7.7.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.5",
+    "@types/cors": "^2.8.15",
+    "@types/express": "4.17.21",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/node": "20.14.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "5.5.3"
+  }
+}
