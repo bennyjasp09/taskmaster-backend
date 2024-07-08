@@ -26,5 +26,5 @@ app.use('/api/notifications', notifications_1.default);
 app.use((err, req, res, next) => {
     (0, errorHandler_1.handleError)(err, res);
 });
-const PORT = parseInt(process.env.PORT, 10) || 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

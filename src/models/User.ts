@@ -8,7 +8,7 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema: Schema = new Schema({
+const UserSchema: Schema<IUser> = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true }
@@ -22,7 +22,8 @@ UserSchema.pre<IUser>('save', async function(next) {
 });
 
 UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  const user = this as IUser; // Type assertion
+  return bcrypt.compare(candidatePassword, user.password);
 };
 
 export default mongoose.model<IUser>('User', UserSchema);

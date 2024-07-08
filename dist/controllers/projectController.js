@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProject = exports.updateProject = exports.getProjectById = exports.createProject = exports.getProjects = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const Project_1 = __importDefault(require("../models/Project"));
 const errorHandler_1 = require("../utils/errorHandler");
 const getProjects = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const { search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = req.query;
-        const query = { members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId };
+        const query = { members: new mongoose_1.default.Types.ObjectId((_a = req.user) === null || _a === void 0 ? void 0 : _a.userId) };
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
@@ -45,14 +46,14 @@ const getProjects = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.getProjects = getProjects;
 const createProject = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _b, _c;
     try {
         const { name, description } = req.body;
         const project = new Project_1.default({
             name,
             description,
-            owner: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId,
-            members: [(_b = req.user) === null || _b === void 0 ? void 0 : _b.userId]
+            owner: new mongoose_1.default.Types.ObjectId((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId),
+            members: [new mongoose_1.default.Types.ObjectId((_c = req.user) === null || _c === void 0 ? void 0 : _c.userId)]
         });
         yield project.save();
         res.status(201).json(project);
@@ -63,9 +64,9 @@ const createProject = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 });
 exports.createProject = createProject;
 const getProjectById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _d;
     try {
-        const project = yield Project_1.default.findOne({ _id: req.params.id, members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId });
+        const project = yield Project_1.default.findOne({ _id: req.params.id, members: new mongoose_1.default.Types.ObjectId((_d = req.user) === null || _d === void 0 ? void 0 : _d.userId) });
         if (!project) {
             return next(new errorHandler_1.AppError('Project not found', 404));
         }
@@ -77,10 +78,10 @@ const getProjectById = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.getProjectById = getProjectById;
 const updateProject = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _e;
     try {
         const { name, description } = req.body;
-        const project = yield Project_1.default.findOneAndUpdate({ _id: req.params.id, owner: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }, { name, description }, { new: true });
+        const project = yield Project_1.default.findOneAndUpdate({ _id: req.params.id, owner: new mongoose_1.default.Types.ObjectId((_e = req.user) === null || _e === void 0 ? void 0 : _e.userId) }, { name, description }, { new: true });
         if (!project) {
             return next(new errorHandler_1.AppError('Project not found or you are not the owner', 404));
         }
@@ -92,9 +93,9 @@ const updateProject = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 });
 exports.updateProject = updateProject;
 const deleteProject = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _f;
     try {
-        const project = yield Project_1.default.findOneAndDelete({ _id: req.params.id, owner: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId });
+        const project = yield Project_1.default.findOneAndDelete({ _id: req.params.id, owner: new mongoose_1.default.Types.ObjectId((_f = req.user) === null || _f === void 0 ? void 0 : _f.userId) });
         if (!project) {
             return next(new errorHandler_1.AppError('Project not found or you are not the owner', 404));
         }

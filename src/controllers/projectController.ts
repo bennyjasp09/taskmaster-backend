@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 import Project from '../models/Project';
 import { AppError } from '../utils/errorHandler';
 
 export const getProjects = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { search, sortBy = 'createdAt', sortOrder = 'desc', page = 1, limit = 10 } = req.query;
-    const query: any = { members: req.user?.userId };
+    const query: any = { members: new mongoose.Types.ObjectId(req.user?.userId) };
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
@@ -35,8 +36,8 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
     const project = new Project({
       name,
       description,
-      owner: req.user?.userId,
-      members: [req.user?.userId]
+      owner: new mongoose.Types.ObjectId(req.user?.userId),
+      members: [new mongoose.Types.ObjectId(req.user?.userId)]
     });
     await project.save();
     res.status(201).json(project);
@@ -47,7 +48,7 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
 
 export const getProjectById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const project = await Project.findOne({ _id: req.params.id, members: req.user?.userId });
+    const project = await Project.findOne({ _id: req.params.id, members: new mongoose.Types.ObjectId(req.user?.userId) });
     if (!project) {
       return next(new AppError('Project not found', 404));
     }
@@ -61,7 +62,7 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
   try {
     const { name, description } = req.body;
     const project = await Project.findOneAndUpdate(
-      { _id: req.params.id, owner: req.user?.userId },
+      { _id: req.params.id, owner: new mongoose.Types.ObjectId(req.user?.userId) },
       { name, description },
       { new: true }
     );
@@ -76,7 +77,7 @@ export const updateProject = async (req: Request, res: Response, next: NextFunct
 
 export const deleteProject = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const project = await Project.findOneAndDelete({ _id: req.params.id, owner: req.user?.userId });
+    const project = await Project.findOneAndDelete({ _id: req.params.id, owner: new mongoose.Types.ObjectId(req.user?.userId) });
     if (!project) {
       return next(new AppError('Project not found or you are not the owner', 404));
     }

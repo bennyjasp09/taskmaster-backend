@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = exports.updateTask = exports.getTaskById = exports.getTasks = exports.addComment = exports.createTask = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const Task_1 = __importDefault(require("../models/Task"));
 const Project_1 = __importDefault(require("../models/Project"));
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const { title, description, status, assignedTo, project, dueDate } = req.body;
-        const projectExists = yield Project_1.default.findOne({ _id: project, members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId });
+        const projectExists = yield Project_1.default.findOne({ _id: project, members: new mongoose_1.default.Types.ObjectId((_a = req.user) === null || _a === void 0 ? void 0 : _a.userId) });
         if (!projectExists) {
             return res.status(404).json({ message: 'Project not found or you are not a member' });
         }
@@ -40,10 +41,12 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createTask = createTask;
 const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _b, _c;
     try {
         const { content } = req.body;
-        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) } }, { $push: { comments: { user: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId, content } } }, { new: true });
+        const memberProjects = yield Project_1.default.find({ members: new mongoose_1.default.Types.ObjectId((_b = req.user) === null || _b === void 0 ? void 0 : _b.userId) });
+        const memberProjectIds = memberProjects.map(project => project._id);
+        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: memberProjectIds } }, { $push: { comments: { user: (_c = req.user) === null || _c === void 0 ? void 0 : _c.userId, content } } }, { new: true });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });
         }
@@ -101,10 +104,12 @@ const getTaskById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getTaskById = getTaskById;
 const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _d;
     try {
         const { title, description, status, assignedTo, dueDate } = req.body;
-        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) } }, { title, description, status, assignedTo, dueDate }, { new: true });
+        const memberProjects = yield Project_1.default.find({ members: new mongoose_1.default.Types.ObjectId((_d = req.user) === null || _d === void 0 ? void 0 : _d.userId) });
+        const memberProjectIds = memberProjects.map(project => project._id);
+        const task = yield Task_1.default.findOneAndUpdate({ _id: req.params.id, project: { $in: memberProjectIds } }, { title, description, status, assignedTo, dueDate }, { new: true });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });
         }
@@ -116,11 +121,13 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateTask = updateTask;
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _e;
     try {
+        const memberProjects = yield Project_1.default.find({ members: new mongoose_1.default.Types.ObjectId((_e = req.user) === null || _e === void 0 ? void 0 : _e.userId) });
+        const memberProjectIds = memberProjects.map(project => project._id);
         const task = yield Task_1.default.findOneAndDelete({
             _id: req.params.id,
-            project: { $in: yield Project_1.default.find({ members: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId }) }
+            project: { $in: memberProjectIds }
         });
         if (!task) {
             return res.status(404).json({ message: 'Task not found or you do not have permission' });
